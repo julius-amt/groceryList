@@ -45,9 +45,11 @@ let totalPrice = 0;
 let receiptContent = "Grocery List:\n--------------------\n";
 for (const item of GROCERY_LIST) {
     const price = GROCERY_LIST_PRICES[item.name];
-    totalPrice += price * item.quantity || 0;
-
-    receiptContent += `${item.name} - ${item.quantity} ${item.unit} - $${price}\n`;
+    const totalPriceForItem = price * item.quantity || 0;
+    totalPrice += totalPriceForItem;
+    receiptContent += `${item.name} - ${item.quantity} ${
+        item.unit
+    } - $${totalPriceForItem.toFixed(2)}\n`;
 }
 
 // Add the total price to the reciept
