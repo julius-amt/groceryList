@@ -6,7 +6,27 @@ import {
     GroceryListItem,
 } from "./types/grocery";
 
-const GROCERY_LIST_PRICES: GroceryListPrices = {};
+// Grocery list and prices
+let GROCERY_LIST: GroceryListItem[] = [];
+const GROCERY_LIST_PRICES: GroceryListPrices = {
+    Milk: 1.5,
+    Eggs: 2.0,
+    Bread: 1.2,
+    Apples: 3.0,
+    Bananas: 1.8,
+    Tomatoes: 2.5,
+    Onions: 0.5,
+    Potatoes: 1.0,
+    Carrots: 1.5,
+    Lettuce: 1.0,
+    Cucumber: 0.7,
+    Yogurt: 1.0,
+    Cheese: 4.0,
+    Coffee: 3.5,
+    Tea: 2.5,
+    Pasta: 1.2,
+    Rice: 2.0,
+};
 
 const groceryListPath = path.join(__dirname, "data", "grocery_list.json");
 
@@ -15,18 +35,34 @@ if (fs.existsSync(groceryListPath)) {
     const groceryListData = fs.readFileSync(groceryListPath, "utf8");
     const groceryListJson: GroceryListJson = JSON.parse(groceryListData);
 
-    const groceryListItems: GroceryListItem[] = groceryListJson.items;
-
-    // Loop through the grocery list and randomely generate prcices to the GROCERY_LIST_PRICES object
-    groceryListItems.forEach((item: GroceryListItem) => {
-        const itemPrice2DP = (Math.random() * 10).toFixed(2); // Randomely generate a price between 0 and 10 with 2 decimal places
-        const itemPrice = parseFloat(itemPrice2DP);
-        GROCERY_LIST_PRICES[item.name] = itemPrice;
-    });
-
-    // console.log(GROCERY_LIST_PRICES);
+    GROCERY_LIST = groceryListJson.items;
 } else {
     console.error("Grocery list not found");
 }
 
-//
+// calculate the total price of the grocery list and create a reciept
+let totalPrice = 0;
+let receiptContent = "Grocery List:\n--------------------\n";
+for (const item of GROCERY_LIST) {
+    const price = GROCERY_LIST_PRICES[item.name];
+    totalPrice += price * item.quantity;
+
+    receiptContent += `${item.name} - ${item.quantity} ${item.unit} - $${price}\n`;
+}
+
+// Add the total price to the reciept
+receiptContent += `--------------------\nTotal Price: $${totalPrice.toFixed(
+    2
+)}`;
+
+// Write the reciept to a file
+const receiptPath = path.join(__dirname, "data", "shopping_receipt.txt");
+if (!fs.existsSync(receiptPath)) {
+    fs.writeFileSync(receiptPath, receiptContent);
+    console.log("Reciept created successfully");
+} else {
+    // removee the reciept file if it already exists
+    fs.unlinkSync(receiptPath);
+    fs.writeFileSync(receiptPath, receiptContent);
+    console.log("Receipt created successfully");
+}
