@@ -1,7 +1,9 @@
 
-# Grocery Shopping Automation
+---
 
-This project is a Node.js script designed to automate grocery shopping calculations by reading a predefined list of grocery items and quantities from a JSON file, calculating the total cost based on a price list, and generating a receipt.
+# Grocery Shopping Automation Script
+
+This project is a Node.js and TypeScript script that automates grocery shopping calculations. It reads a list of grocery items from a JSON file, calculates the total cost based on predefined prices, and generates a receipt saved in a text file.
 
 ## Table of Contents
 - [Project Structure](#project-structure)
@@ -15,7 +17,7 @@ This project is a Node.js script designed to automate grocery shopping calculati
 - [License](#license)
 
 ## Project Structure
-The project follows this directory structure:
+The project is organized as follows:
 ```
 ├── package.json
 ├── package-lock.json
@@ -24,6 +26,7 @@ The project follows this directory structure:
 │   ├── data
 │   │   ├── grocery_list.json
 │   │   └── shopping_receipt.txt
+│   ├── helpers.ts
 │   ├── script.ts
 │   └── types
 │       └── grocery.d.ts
@@ -32,18 +35,18 @@ The project follows this directory structure:
 
 ### Objectives
 The primary objectives of this project are:
-- Demonstrate the use of the Node.js `fs` (File System) module for file operations.
-- Practice string manipulation and calculations.
-- Apply functional programming principles.
+- Demonstrate use of the Node.js `fs` (File System) module for file operations.
+- Modularize code using helper functions.
+- Apply functional programming principles and structured data handling.
 
 ## Features
 - Reads a grocery list from a JSON file.
 - Calculates the total cost of items based on a predefined price list.
-- Generates a formatted grocery receipt containing the list and the total cost.
-- Writes the receipt to a text file and handles file existence gracefully.
+- Generates a formatted receipt with the grocery list and total cost.
+- Uses modular helper functions to organize file operations and calculations.
 
 ## Setup and Installation
-To get started with this project, follow these steps:
+To get started, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
@@ -58,42 +61,47 @@ To get started with this project, follow these steps:
    ```
 
 3. **TypeScript Configuration**:
-   Ensure `tsconfig.json` is configured to compile TypeScript files in the `src` directory.
+   Ensure `tsconfig.json` is configured correctly to compile TypeScript files in the `src` directory.
 
 ## Usage
-1. **Add Grocery List**:
-   Edit `src/data/grocery_list.json` to add or modify the list of grocery items and their quantities.
+1. **Update the Grocery List**:
+   Modify `src/data/grocery_list.json` to customize your list of grocery items and quantities.
 
 2. **Run the Script**:
    Execute the script with:
    ```bash
    npm run dev
    ```
-   This will create a receipt (`shopping_receipt.txt`) in the `src/data/` directory with a formatted list and total cost.
+   This will generate a receipt (`shopping_receipt.txt`) in the `src/data/` directory.
 
 ## File Descriptions
 
 ### JSON Files
-- **grocery_list.json**: Contains the list of items and quantities needed for the shopping list, structured as an array of item objects:
+- **grocery_list.json**: A JSON file containing the list of grocery items, quantities, and units. Example:
   ```json
   {
     "items": [
-      { "name": "Milk", "quantity": 1, "unit": "liter" },
+      { "name": "Milk", "quantity": 1, "unit": "liters" },
       ...
     ]
   }
   ```
 
-- **shopping_receipt.txt**: The generated receipt file showing each item, its quantity, unit, and calculated cost, followed by the total price.
+- **shopping_receipt.txt**: The output file containing the generated grocery receipt, listing each item with its quantity, unit, price, and the total cost.
 
 ### TypeScript Files
 - **script.ts**: Main script that:
-  - Reads from `grocery_list.json`
-  - Calculates item and total costs
-  - Writes to `shopping_receipt.txt`
-  - Ensures error handling if files are missing
+  - Reads the grocery list from `grocery_list.json`
+  - Calls helper functions to calculate the total price and create a receipt
+  - Writes the receipt to `shopping_receipt.txt`
 
-- **grocery.d.ts**: Type definitions for the grocery list structure:
+- **helpers.ts**: Contains helper functions:
+  - `readFile`: Reads a file and returns its content as a string.
+  - `fileExists`: Checks if a file exists at the specified path.
+  - `calculateTotalPriceAndCreateReceipt`: Takes the list of grocery items and their prices to generate the receipt content.
+  - `writeReceiptToFile`: Writes the generated receipt to a file, deleting any existing receipt file to avoid duplication.
+
+- **grocery.d.ts**: Type definitions for grocery list items and price structure:
   ```typescript
   export interface GroceryListItem {
       name: string;
@@ -111,17 +119,13 @@ To get started with this project, follow these steps:
   ```
 
 ## Error Handling
-- **File Not Found**: Logs an error message if `grocery_list.json` is missing.
-- **Invalid Data**: Parses and validates data structure from `grocery_list.json`.
-- **File Operations**: Checks if `shopping_receipt.txt` already exists and deletes it if necessary to avoid conflicts.
+- **Missing File**: Logs an error if `grocery_list.json` is not found.
+- **Invalid Data Structure**: Parses and validates JSON data, logging an error if it does not match the expected structure.
+- **File Write Operations**: Handles existing receipt files by deleting them before creating a new one.
 
 ## Limitations
-- **Static Price List**: Prices are predefined in the script; modifications require editing `script.ts`.
-- **Limited Units**: Calculations assume the price per unit matches the quantity. If quantities need conversion (e.g., grams to kilograms), the script must be adapted.
+- **Static Price List**: Prices are predefined in the script. For customization, the price list must be updated directly in `script.ts`.
+- **Limited Unit Compatibility**: The script assumes the unit cost is per quantity. Conversions (e.g., grams to kilograms) would require additional logic.
 
 ## License
-This project is open-source and available under the [MIT License](LICENSE).
-
---- 
-
-This README covers setup, usage, structure, and other necessary details for anyone to understand and work with your grocery shopping script effectively.
+This project is open-source and available under the MIT License.
